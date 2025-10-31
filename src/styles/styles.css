@@ -1,0 +1,15 @@
+:root {
+  --custom-purple: #8B5CF6;
+  --custom-purple-rgb: 139, 92, 246;
+}
+
+.form-floating .form-control:focus {
+  border-color: var(--custom-purple);
+  box-shadow: 0 0 0 0.2rem rgba(var(--custom-purple-rgb), 0.25);
+}
+
+.form-floating .form-control:focus ~ label,
+
+.form-floating .form-control:not(:placeholder-shown) ~ label {
+  color: var(--custom-purple);
+}

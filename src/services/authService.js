@@ -39,6 +39,7 @@ const AuthService = {
 
   async verifyEmail(payload) {
     // { code } ou { token }, conforme schema EmailVerifyRequest
+    payload = { token: payload.code, email: payload.email };
     const { data } = await api.post(EMAIL_VERIFY_PATH, payload);
     return data;
   },

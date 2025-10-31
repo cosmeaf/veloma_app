@@ -57,7 +57,7 @@ export default function App() {
       <BrowserRouter>
         <Gate />
       </BrowserRouter>
-      <ToastContainer position="top-right" newestOnTop closeOnClick pauseOnHover />
+      <ToastContainer position="top-right" newestOnTop closeOnClick pauseOnHover autoClose={1500} />
     </AuthProvider>
   );
 }

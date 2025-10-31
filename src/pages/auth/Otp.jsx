@@ -1,46 +1,92 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import AuthService from "../../services/authService";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Otp() {
-  const [username, setUsername] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
-
-  const generate = async () => {
-    setBusy(true);
-    try {
-      await AuthService.otpGenerate({ username }); // ajuste payload se precisar
-      toast.success("OTP enviado.");
-    } catch (e) {
-      const data = e?.response?.data;
-      toast.error(typeof data === "object" ? JSON.stringify(data) : "Falha ao gerar OTP");
-    } finally { setBusy(false); }
-  };
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const verify = async () => {
     setBusy(true);
     try {
-      await AuthService.otpVerify({ username, code });
-      toast.success("OTP verificado com sucesso.");
+      const response = await AuthService.otpVerify({ code });
+
+      let tokenUrl = response?.reset_url;
+      tokenUrl = tokenUrl.split("/")[4]
+
+      toast.success("OTP verificado com sucesso.", {
+        autoClose: 1500,
+        onClose: () => {
+          navigate("/auth/reset-password/",{ state: { token: tokenUrl } });
+        }
+      });
+
     } catch (e) {
       const data = e?.response?.data;
       toast.error(typeof data === "object" ? JSON.stringify(data) : "OTP inválido");
+      console.error("OTP verify error:", e);
     } finally { setBusy(false); }
   };
 
   return (
-    <div className="container">
-      <div className="card" style={{ maxWidth: 520, margin: "3rem auto" }}>
-        <h2>OTP</h2>
-        <label>Username (NIF)<input className="input" value={username} onChange={(e) => setUsername(e.target.value)} /></label>
-        <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn" onClick={generate} disabled={!username || busy}>Gerar / enviar OTP</button>
-        </div>
-        <div className="hr" />
-        <label>Código<input className="input" value={code} onChange={(e) => setCode(e.target.value)} /></label>
-        <div style={{ marginTop: 12 }}>
-          <button className="btn" onClick={verify} disabled={!username || !code || busy}>Validar</button>
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-white">
+      <div
+        className="card shadow rounded-3 border-0"
+        style={{ width: "100%", maxWidth: 520 }}
+      >
+        <div className="card-body p-5">
+          <h2 className="text-center mb-4">Verificação OTP</h2>
+          <p className="text-center text-muted mb-4">
+            Insira o código que enviamos para o seu e-mail.
+          </p>
+
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="code"
+              name="code"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="Código OTP"
+              required
+            />
+            <label htmlFor="code">Código OTP</label>
+          </div>
+
+          <div className="d-grid">
+            <button
+              className="btn"
+              onClick={verify}
+              disabled={!code || busy}
+              style={{ backgroundColor: "#8B5CF6", color: "white", padding: "0.75rem", border: 'none' }}
+            >
+              {busy ? "Aguarde..." : "Validar"}
+            </button>
+          </div>
+
+          <div className="text-center mt-4">
+            <small>
+              <button
+                type="button"
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  color: "#8B5CF6",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  textDecoration: "none",
+                }}
+                onClick={() => navigate("/auth/recovery")}
+              >
+                VOLTAR
+              </button>
+            </small>
+          </div>
         </div>
       </div>
     </div>
