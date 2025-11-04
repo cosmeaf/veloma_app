@@ -14,15 +14,14 @@ export default function Recovery() {
     setBusy(true);
     try {
       await AuthService.recovery({ email });
-      toast.success("Se existir conta, receberá instruções por e-mail.", {
-        onClose: () => {
+      toast.success("Receberá um código por e-mail.", {
+        onOpen: () => {
           navigate("/auth/otp", { state: { username: email } });
         },
       });
 
     } catch (e) {
-      const data = e?.response?.data;
-      toast.error(typeof data === "object" ? JSON.stringify(data) : "Falha na recuperação");
+      toast.error(e);
     } finally { setBusy(false); }
   };
 

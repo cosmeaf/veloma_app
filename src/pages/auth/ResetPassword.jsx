@@ -35,7 +35,7 @@ export default function ResetPassword() {
       await AuthService.resetPassword({ token, password, password2 });
 
       toast.success("Password atualizada com sucesso.", {
-        onClose: () => nav("/auth/login")
+        onOpen: () => nav("/auth/login")
       });
 
     } catch (e) {

@@ -48,10 +48,7 @@ export default function VerifyEmail() {
       await AuthService.sendEmailVerification({ email });
       toast.success("Um novo código foi enviado para o seu e-mail.");
     } catch (e) {
-      const data = e?.response?.data;
-      toast.error(
-        typeof data === "object" ? JSON.stringify(data) : "Falha ao enviar verificação"
-      );
+      toast.error(e);
       setIsDisabled(false);
       setTimer(0);
     } finally {
@@ -64,15 +61,12 @@ export default function VerifyEmail() {
     try {
       await AuthService.verifyEmail({ code, email });
       toast.success("E-mail verificado com sucesso.", {
-        onClose: () => {
+        onOpen: () => {
           navigate("/auth/login");
         },
       });
     } catch (e) {
-      const data = e?.response?.data;
-      toast.error(
-        typeof data === "object" ? JSON.stringify(data) : "Falha na verificação"
-      );
+      toast.error(e);
     } finally {
       setBusy(false);
     }

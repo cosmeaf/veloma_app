@@ -29,7 +29,7 @@ export default function Login() {
         typeof data === "object"
           ? JSON.stringify(data)
           : data || "Falha no login";
-      toast.error(msg, { autoClose: 3000 });
+      toast.error(msg);
     } finally {
       setBusy(false);
     }
@@ -134,7 +134,7 @@ export default function Login() {
                 }}
                 onClick={() => nav("/auth/recovery")}
               >
-                RECUPERAR ACESSO 
+                RECUPERAR ACESSO
               </button>
             </small>
           </div>

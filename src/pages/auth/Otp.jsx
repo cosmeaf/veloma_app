@@ -18,16 +18,13 @@ export default function Otp() {
       tokenUrl = tokenUrl.split("/")[4]
 
       toast.success("OTP verificado com sucesso.", {
-        autoClose: 1500,
-        onClose: () => {
+        onOpen: () => {
           navigate("/auth/reset-password/",{ state: { token: tokenUrl } });
         }
       });
 
     } catch (e) {
-      const data = e?.response?.data;
-      toast.error(typeof data === "object" ? JSON.stringify(data) : "OTP inválido");
-      console.error("OTP verify error:", e);
+      toast.error(e);
     } finally { setBusy(false); }
   };
 

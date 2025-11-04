@@ -31,15 +31,13 @@ export default function Register() {
     try {
       await AuthService.register(form);
       toast.success("Registo concluído. Verifique seu e-mail.", {
-        onClose: () => {
+        onOpen: () => {
           navigate("/auth/verify-email", { state: { email: form.email } });
         }
       });
     } catch (err) {
       const data = err?.response?.data;
-      toast.error(
-        typeof data === "object" ? JSON.stringify(data) : "Falha no registo"
-      );
+      toast.error(e);
     } finally {
       setBusy(false);
     }
